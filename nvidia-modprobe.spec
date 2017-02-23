@@ -1,5 +1,5 @@
 Name:           nvidia-modprobe
-Version:        340.101
+Version:        340.102
 Release:        1%{?dist}
 Summary:        NVIDIA kernel module loader
 Epoch:          2
@@ -35,6 +35,9 @@ make install DESTDIR=%{buildroot} INSTALL="install -p"
 %{_mandir}/man1/%{name}.1.*
 
 %changelog
+* Thu Feb 23 2017 Simone Caronni <negativo17@gmail.com> - 2:340.102-1
+- Udpate to 340.102.
+
 * Thu Dec 15 2016 Simone Caronni <negativo17@gmail.com> - 2:340.101-1
 - Update to 340.101
 
