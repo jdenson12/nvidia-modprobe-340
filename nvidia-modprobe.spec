@@ -1,11 +1,11 @@
 Name:           nvidia-modprobe
 Version:        340.104
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA kernel module loader
 Epoch:          2
 License:        GPLv2+
 URL:            http://www.nvidia.com/object/unix.html
-ExclusiveArch:  %{ix86} x86_64 armv7hl
+ExclusiveArch:  %{ix86} x86_64
 
 Source0:        https://github.com/NVIDIA/%{name}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
@@ -18,23 +18,33 @@ present.
 
 %prep
 %setup -q
-sed -i -e 's|/usr/local|%{_prefix}|g' utils.mk
+# Remove additional CFLAGS added when enabling DEBUG
+sed -i '/+= -O0 -g/d' utils.mk
 
 %build
+export CFLAGS="%{optflags}"
+export LDFLAGS="%{?__global_ldflags}"
 make %{?_smp_mflags} \
+    DEBUG=1 \
     NV_VERBOSE=1 \
-    STRIP_CMD="true"
+    PREFIX=%{_prefix} \
+    STRIP_CMD=true
 
 %install
-mkdir -p %{buildroot}%{_sbindir}
-make install DESTDIR=%{buildroot} INSTALL="install -p"
+%make_install \
+    NV_VERBOSE=1 \
+    PREFIX=%{_prefix} \
+    STRIP_CMD=true
 
 %files
-%doc COPYING
+%license COPYING
 %attr(4755, root, root) %{_bindir}/%{name}
 %{_mandir}/man1/%{name}.1.*
 
 %changelog
+* Sat Dec 23 2017 Jemma Denson <jdenson@gmail.com> - 2:340.104-2
+- Merge in negativo17 to date
+
 * Fri Dec 22 2017 Jemma Denson <jdenson@gmail.com> - 2:340.104-1
 - Update to 340.104.
 
